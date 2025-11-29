@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Fira Code", monospace;
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+.terminal {
+  background-color: #010409;
+  border: 1px solid #30363d;
+  height: 100%;
+}
+
+.prompt::before {
+  content: "user@portfolio:~$ ";
+  color: #58a6ff;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.2em;
+  background-color: #c9d1d9;
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  from,
+  to {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #c9d1d9;
+  }
+}
+
+#terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #c9d1d9;
+  width: calc(100% - 140px);
+  caret-color: #c9d1d9;
+}
+
+.output-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 1.2em;
+}
+
+.output-line a {
+  color: #58a6ff;
+  text-decoration: underline;
+}
+
+.output-line a:hover {
+  color: #79c0ff;
+}
+
+.card-container {
+  perspective: 1000px;
+}
