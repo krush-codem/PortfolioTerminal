@@ -63,3 +63,216 @@ body {
 .card-container {
   perspective: 1000px;
 }
+
+/* } */
+#terminal::-webkit-scrollbar {
+  width: 6px;
+}
+
+#terminal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+  background: linear-gradient(#0f0, #03a062); /* transparent gray */
+  border-radius: 10px;
+}
+
+#terminal::-webkit-scrollbar-thumb:hover {
+  background: #6e7681aa;
+}
+
+/* efew */
+/* 💻 HACKER TERMINAL GLOW CURSOR (Matrix Style) */
+
+/*svv*/
+/* ✨ HOLOGRAM TERMINAL STARTUP ANIMATION */
+.hologram-start {
+  animation: holo-flicker 0.65s ease-out forwards;
+  opacity: 0;
+  transform-origin: top center;
+  filter: blur(2px) brightness(2);
+}
+
+/* Keyframes for hologram activation */
+@keyframes holo-flicker {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.6) skewX(8deg);
+    filter: blur(3px) brightness(4);
+  }
+  10% {
+    opacity: 1;
+    transform: scaleY(1.05) skewX(-4deg);
+    filter: blur(1px) brightness(1.4);
+  }
+  20% {
+    opacity: 0.4;
+    transform: scaleY(0.95) skewX(3deg);
+    filter: blur(2px) brightness(2.5);
+  }
+  35% {
+    opacity: 1;
+    transform: scaleY(1) skewX(-1deg);
+    filter: blur(0.5px) brightness(1.1);
+  }
+  55% {
+    opacity: 0.7;
+    filter: blur(1px) brightness(2);
+  }
+  75% {
+    opacity: 1;
+    filter: blur(0.4px) brightness(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1) skewX(0deg);
+    filter: blur(0) brightness(1);
+  }
+}
+
+/*svv===*/
+/* 🌐 NAV LINKS FADE-IN */
+.nav-link {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: nav-links-intro 0.4s ease-out forwards;
+  animation-delay: 0.6s; /* delay after terminal appears */
+}
+
+@keyframes nav-links-intro {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*svv9999*/
+/* 💻 HACKER TERMINAL GLOW CURSOR (Matrix Style) */
+.cursor {
+  width: 10px;
+  height: 22px;
+  background: #00ff55;
+  margin-left: 4px;
+  border-radius: 2px;
+  opacity: 0; /* start hidden */
+  animation: cursor-intro 0.5s ease-out forwards 0.9s,
+    /* fade/slide in with delay */ hacker-blink 0.8s steps(1) infinite,
+    hacker-glow 1.6s ease-in-out infinite, hacker-flicker 0.12s infinite;
+  box-shadow: 0 0 8px #00ff55, 0 0 14px #00ff55, 0 0 22px #00ff55;
+}
+
+/* Blinking — classic terminal style */
+@keyframes hacker-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.1%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Soft pulsing glow */
+@keyframes hacker-glow {
+  0% {
+    box-shadow: 0 0 6px #00ff55, 0 0 12px #00ff55, 0 0 20px #00ff55;
+  }
+  50% {
+    box-shadow: 0 0 12px #00ff55, 0 0 22px #00ff55, 0 0 32px #00ff55;
+  }
+  100% {
+    box-shadow: 0 0 6px #00ff55, 0 0 12px #00ff55, 0 0 20px #00ff55;
+  }
+}
+
+/* Flicker effect — CRT style */
+@keyframes hacker-flicker {
+  0%,
+  20%,
+  100% {
+    opacity: 1;
+  }
+  10%,
+  15% {
+    opacity: 0.75;
+  }
+}
+
+/* Cursor intro: fade + slight slide-in */
+@keyframes cursor-intro {
+  0% {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Chero*/
+/* Floating thought bubbles (keep this) */
+.float-bubble {
+  animation: float-bubble 6s ease-in-out infinite;
+}
+
+.float-bubble-delay {
+  animation: float-bubble 7s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes float-bubble {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Moving text strips (diagonal + bottom) */
+.strip {
+  overflow: hidden;
+}
+
+.strip-inner,
+.strip-inner-reverse {
+  display: inline-flex;
+  white-space: nowrap;
+  gap: 2rem;
+  min-width: 200%;
+  animation: strip-marquee 20s linear infinite;
+}
+
+.strip-inner-reverse {
+  animation-direction: reverse;
+}
+
+@keyframes strip-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.glass-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
