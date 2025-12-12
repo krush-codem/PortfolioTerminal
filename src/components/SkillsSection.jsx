@@ -1,5 +1,5 @@
 // src/components/SkillsSection.jsx
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 const SKILL_GROUPS = [
@@ -30,11 +30,76 @@ export default function SkillsSection() {
   // which card is “open” on tap (for mobile)
   const [activeIndex, setActiveIndex] = useState(null);
 
+  // ---- glitch word state + timer ----
+  const words = ["work", "efforts", "passion", "blood&sweat"];
+  const [wordIndex, setWordIndex] = useState(0); // start with "work"
+  const [isGlitch, setIsGlitch] = useState(false);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    // rotate every 2200ms, glitch duration ~420ms
+    const interval = setInterval(() => {
+      setIsGlitch(true);
+      timeoutRef.current = setTimeout(() => {
+        setWordIndex((i) => (i + 1) % words.length);
+        // small tail after swap then stop glitch
+        setTimeout(() => setIsGlitch(false), 220);
+      }, 420);
+    }, 2200);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const currentWord = words[wordIndex];
+
   return (
     <section
       id="skills"
       className="relative w-full bg-black text-white pt-0 pb-0 md:pb-0 -mt-1"
     >
+      {/* Inline CSS for glitch effect */}
+      <style>{`
+        @keyframes glitch-jitter {
+          0% { transform: translate3d(0,0,0); opacity:1; }
+          10% { transform: translate3d(-2px,-1px,0) skew(-0.5deg); opacity:0.95; }
+          20% { transform: translate3d(2px,1px,0) skew(0.5deg); opacity:0.9; }
+          30% { transform: translate3d(-1px,0,0) skew(-0.3deg); opacity:0.98; }
+          40% { transform: translate3d(1px,1px,0) skew(0.2deg); opacity:0.9; }
+          100% { transform: translate3d(0,0,0); opacity:1; }
+        }
+        @keyframes glitch-flicker {
+          0% { clip-path: inset(0 0 0 0); opacity:1; }
+          20% { clip-path: inset(10% 0 70% 0); opacity:0.6; }
+          40% { clip-path: inset(60% 0 10% 0); opacity:0.8; }
+          60% { clip-path: inset(0 40% 0 10%); opacity:0.7; }
+          80% { clip-path: inset(5% 0 5% 0); opacity:0.95; }
+          100% { clip-path: inset(0 0 0 0); opacity:1; }
+        }
+
+        .glitch-wrap { display:inline-block; position:relative; vertical-align:middle; line-height:1; padding:0 .12rem; }
+        .glitch-base { position:relative; z-index:3; display:inline-block; transition: transform 200ms ease; }
+        .glitch-layer { position:absolute; left:0; top:0; z-index:2; mix-blend-mode: screen; pointer-events:none; opacity:0; }
+        .glitch-layer.red { color: rgba(255,90,90,0.95); transform: translate3d(-2px,0,0); }
+        .glitch-layer.cyan { color: rgba(120,210,255,0.9); transform: translate3d(2px,0,0); }
+        .is-glitch .glitch-layer { opacity: 0.95; animation: glitch-jitter 420ms linear both, glitch-flicker 420ms linear both; }
+        .is-glitch .glitch-base { transform: scale(0.985); }
+        .is-glitch .glitch-base::after {
+          content: "";
+          position: absolute;
+          inset: -6px;
+          z-index: -1;
+          border-radius: 6px;
+          box-shadow: 0 8px 30px rgba(255,60,60,0.12);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .glitch-layer, .glitch-base { transition:none !important; animation:none !important; }
+        }
+      `}</style>
+
       <motion.div
         initial={{ opacity: 0, scaleY: 0.85, originY: 0 }}
         whileInView={{ opacity: 1, scaleY: 1 }}
@@ -46,7 +111,7 @@ export default function SkillsSection() {
           bg-[#050509]
           shadow-[0_0_110px_rgba(248,113,113,0.35)]
           px-4 sm:px-10 lg:px-20
-          pt-8 pb-10 sm:pt-10 sm:pb-20
+          pt-8 sm:pt-10 
           overflow-hidden
         "
       >
@@ -62,9 +127,32 @@ export default function SkillsSection() {
             <p className="text-xs tracking-[0.35em] uppercase text-red-400 mb-3">
               Skillset
             </p>
+
+            {/* updated H2: glitch word injected here and colored red */}
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
-              Where I put the work in
+              Where I put the{" "}
+              <span
+                className={`glitch-wrap ${isGlitch ? "is-glitch" : ""}`}
+                aria-live="polite"
+                aria-atomic="true"
+                role="status"
+              >
+                <span
+                  className="glitch-base text-red-500"
+                  style={{ fontSize: "inherit" }}
+                >
+                  {currentWord}
+                </span>
+                <span className="glitch-layer red" aria-hidden>
+                  {currentWord}
+                </span>
+                <span className="glitch-layer cyan" aria-hidden>
+                  {currentWord}
+                </span>
+              </span>{" "}
+              in
             </h2>
+
             <p className="text-sm md:text-base text-gray-300 max-w-2xl">
               Four tracks that cover how I design, build and ship things — from
               UI polish to backend wiring and everything in between.
@@ -178,10 +266,7 @@ export default function SkillsSection() {
         </div>
 
         {/* GLOWS AROUND SECTION (your original ones) */}
-        <div className="pointer-events-none absolute inset-x-0 -top-10 h-16 bg-red-500/65 blur-3xl" />
-        <div className="pointer-events-none absolute inset-x-0 -bottom-10 h-16 bg-red-500/65 blur-3xl" />
-        <div className="pointer-events-none absolute inset-y-0 -left-10 w-16 bg-red-500/65 blur-3xl" />
-        <div className="pointer-events-none absolute inset-y-0 -right-10 w-16 bg-red-500/65 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 -top-10 h-16 bg-red-500/80 blur-3xl" />
       </motion.div>
     </section>
   );

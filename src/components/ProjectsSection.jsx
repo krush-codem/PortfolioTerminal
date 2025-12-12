@@ -1,47 +1,63 @@
 // src/components/ProjectsSection.jsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { desc } from "framer-motion/client";
 
 const PROJECTS = [
   {
     id: "01",
-    name: "Terminal Portfolio",
-    role: "Solo • Frontend",
-    year: "2024",
-    tagline: "Developer-first cinematic CLI portfolio.",
-    tech: "React, Vite, Tailwind, Framer Motion",
-    image: "/projects/terminal.png",
-    link: "https://github.com/your-handle/terminal-portfolio",
+    name: "Visual-Code",
+    role: "Collab • Frontend",
+    year: "2025",
+    tagline: "Code, Parsed. Understood. Master the Blueprint.",
+    tech: "React, xy-flow, TailwindCSS, Shadcn/UI",
+    image: "/project-img/code-IDE.jpg",
+    link: "https://github.com/krush-codem/visual-code",
+    desc: "An innovative web-based code editor that transforms traditional coding into a visual experience by flowcharts and diagrams, making coding more intuitive and efficient.",
   },
   {
     id: "02",
-    name: "Quiz App",
-    role: "Solo • Frontend",
-    year: "2023",
-    tagline: "Fast, responsive quiz engine with score tracking.",
-    tech: "React, Context API, Tailwind",
-    image: "/projects/quiz.png",
-    link: "https://github.com/your-handle/quiz-app",
+    name: "Quick-AI",
+    role: "Collab • Frontend",
+    year: "2025",
+    tagline: "AI platform for all your needs.",
+    tech: "React, Context API, TailwindCSS",
+    image: "/project-img/ai.jpg",
+    link: "https://github.com/Dynamicpayal/quickAI",
+    desc: "A versatile AI platform that integrates multiple AI services into a single, user-friendly interface, allowing users to access various AI tools and functionalities seamlessly.",
   },
   {
     id: "03",
-    name: "Random User Generator",
+    name: "Habit-Kracker",
     role: "Solo • Web App",
-    year: "2023",
-    tagline: "API-driven profile generator for testing UIs.",
-    tech: "React, RandomUser API, styled-components",
-    image: "/projects/random-user.png",
-    link: "https://github.com/your-handle/random-user",
+    year: "2024",
+    tagline: "Turn Your Daily Grind Into A Game.",
+    tech: "React, TailwindCSS, shadcn/UI",
+    image: "/project-img/new.png",
+    link: "https://habit-kracker.vercel.app/",
+    desc: "Level Up is a productivity application that transforms daily tasks into an RPG-style game. Built to solve the problem of motivation, it uses immediate gratification (XP, Level Ups, Animations) to help users build consistency.",
   },
   {
     id: "04",
-    name: "Library Management System",
-    role: "Academic • Java",
-    year: "2022",
-    tagline: "Simple desktop app for managing books & borrowers.",
-    tech: "Java, Swing, JDBC, MySQL",
-    image: "/projects/library.png",
-    link: "https://github.com/your-handle/library-system",
+    name: "SSPPT",
+    role: "Academic • Python",
+    year: "2024",
+    tagline: "Simple desktop PROMODER app for managing tasks on time.",
+    tech: "Python, JSON, Tkinter",
+    image: "/project-img/imageq.png",
+    link: "https://github.com/krush-codem/SSPPT",
+    desc: "A minimalistic, cross-platform Python application for task-based study planning and focused time management using Pomodoro sessions. Built with Tkinter for the GUI and JSON for persistent local storage.",
+  },
+  {
+    id: "05",
+    name: "To-Do List",
+    role: "Academic • JavaScript",
+    year: "2023",
+    tagline: "Simple web-based to-do list tracker.",
+    tech: "JavaScript, HTML, CSS",
+    image: "/project-img/image.png",
+    link: "https://to-do-list-hare.netlify.app/",
+    desc: "A simple and intuitive TO-DO list application designed to help users manage their tasks efficiently.",
   },
 ];
 
@@ -258,7 +274,6 @@ function ProjectBadge({ isActive }) {
         >
           {/* chevron outline */}
           <polyline
-            // flip this to "1,7 8,2 15,7" if you want them pointing up instead
             points="1,2 8,7 15,2"
             fill="none"
             stroke="currentColor"
@@ -275,9 +290,26 @@ function ProjectBadge({ isActive }) {
 function ProjectRow({ project, isOpen, onToggle }) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // two glow strengths:
+  const hoverShadow = "0 0 18px rgba(248,113,113,0.28)";
+  const openShadow = "0 0 40px rgba(248,113,113,0.55)";
+  const defaultShadow = "0 0 0 rgba(0,0,0,0)";
+
+  // compute effective state (either hovered OR opened)
+  const active = isOpen || isHovered;
+
   return (
     <motion.div
       layout
+      // animate boxShadow & subtle border color when active (hover or open)
+      animate={
+        isOpen
+          ? { boxShadow: openShadow, borderColor: "rgba(248,113,113,0.65)" }
+          : isHovered
+          ? { boxShadow: hoverShadow, borderColor: "rgba(248,113,113,0.38)" }
+          : { boxShadow: defaultShadow, borderColor: "rgba(255,255,255,0.08)" }
+      }
+      transition={{ duration: 0.22, ease: "easeOut" }}
       className="
         relative
         rounded-2xl
@@ -292,16 +324,15 @@ function ProjectRow({ project, isOpen, onToggle }) {
       {/* Main row content */}
       <div
         className="
-    flex flex-col justify-center       
-    gap-2 md:gap-4
-    px-4 py-4 md:px-5 md:py-4
- 
-    md:grid
-    md:grid-cols-[minmax(0,0.4fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.6fr)]
-  "
+          flex flex-col justify-center
+          gap-2 md:gap-4
+          px-4 py-4 md:px-5 md:py-4
+          md:grid
+          md:grid-cols-[minmax(0,0.4fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.6fr)]
+        "
       >
         <div className="flex items-center gap-2 text-xs text-gray-400">
-          <ProjectBadge isActive={isOpen || isHovered} />
+          <ProjectBadge isActive={active} />
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -325,14 +356,14 @@ function ProjectRow({ project, isOpen, onToggle }) {
                   exit={{ opacity: 0, y: 6, scale: 0.96 }}
                   transition={{ duration: 0.22, ease: "easeOut" }}
                   className="
-          pointer-events-none
-          absolute right-0 top-1/2 -translate-y-1/2
-          w-56
-          rounded-2xl overflow-hidden
-          border border-red-500/70
-          bg-black
-          shadow-[0_0_40px_rgba(248,113,113,0.55)]
-        "
+                    pointer-events-none
+                    absolute right-0 top-1/2 -translate-y-1/2
+                    w-56
+                    rounded-2xl overflow-hidden
+                    border border-red-500/70
+                    bg-black
+                    shadow-[0_0_40px_rgba(248,113,113,0.55)]
+                  "
                 >
                   <div className="relative h-36 bg-zinc-900 overflow-hidden">
                     <img
@@ -412,11 +443,7 @@ function ProjectRow({ project, isOpen, onToggle }) {
                 <span className="font-semibold text-white">Stack: </span>
                 {project.tech}
               </p>
-              <p>
-                This is a short space where you can explain what you actually
-                built — architecture decisions, fun bugs, or why this project
-                matters to you.
-              </p>
+              <p>{project.desc}</p>
               {project.link && (
                 <a
                   href={project.link}

@@ -711,15 +711,17 @@ function DeveloperView({ active, onClose }) {
         active
           ? "opacity-100 translate-y-0 pointer-events-auto hologram-start"
           : "opacity-0 translate-y-4 pointer-events-none"
-      } transition-all duration-500`}
+      } transition-all duration-500 overflow-y-auto`}
     >
-      <div className="p-4 md:p-8 h-full">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-4rem)]">
-          {/* Left: profile card with 3D container */}
-          <ProfileCard variant="3d" />
+      <div className="p-4 md:p-8 min-h-full">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
+          {/* Left: profile card with 3D container - natural height on mobile, full on desktop */}
+          <div className="h-auto lg:h-[calc(100vh-4rem)] lg:sticky lg:top-8">
+            <ProfileCard variant="3d" />
+          </div>
 
-          {/* Right: terminal + close button */}
-          <div className="lg:col-span-2 h-full relative">
+          {/* Right: terminal + close button - takes natural height on mobile, full on desktop */}
+          <div className="lg:col-span-2 min-h-[600px] lg:h-[calc(100vh-4rem)] relative">
             <button
               onClick={onClose}
               className="absolute top-3 right-3 z-10 rounded-full px-3 py-1 text-sm bg-[#161b22] border border-[#30363d] text-gray-300 hover:text-white hover:bg-black transition"
@@ -729,10 +731,10 @@ function DeveloperView({ active, onClose }) {
 
             <div
               id="terminal"
-              className="terminal rounded-lg shadow-xl p-4 max-h-[calc(100vh-6rem)] overflow-y-auto flex flex-col"
+              className="terminal rounded-lg shadow-xl p-3 md:p-4 h-full overflow-y-auto flex flex-col"
             >
               <div className="flex-grow" id="terminal-output">
-                <div className="mb-4 text-green-400 text-sm">
+                <div className="mb-4 text-green-400 text-xs md:text-sm">
                   <a href="#" className="nav-link" data-command="help">
                     help
                   </a>{" "}
@@ -767,7 +769,7 @@ function DeveloperView({ active, onClose }) {
                 </div>
               </div>
 
-              <div className="flex items-center">
+              <div className="flex items-center flex-shrink-0">
                 <span className="prompt"></span>
                 <input
                   type="text"
@@ -777,7 +779,7 @@ function DeveloperView({ active, onClose }) {
                   autoCapitalize="off"
                   spellCheck="false"
                   autoFocus
-                  className="bg-transparent border-none outline-none text-[#c9d1d9] w-full"
+                  className="bg-transparent border-none outline-none text-[#c9d1d9] w-full text-sm md:text-base"
                 />
                 <span className="cursor"></span>
               </div>

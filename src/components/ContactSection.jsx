@@ -57,32 +57,32 @@ const SOCIALS = [
 const arcadeGames = [
   {
     id: "tic-tac-toe",
-    name: "tic-tac-toe",
-    description: "Fast-paced trivia - don't let the timer beat you.",
+    name: "Tic-Tac-Toe",
+    description: "Classic Tic-Tac-Toe with a twist of animation.",
     riveFile: "/rive/tictac.riv",
   },
   {
-    id: "stack-builder",
-    name: "Stack Builder",
-    description: "Drag, stack, and ship without dropping a block.",
+    id: "Hit-Road",
+    name: "Hit-Road",
+    description: "Dodge the obstacles and hit the road!",
     riveFile: "/rive/hitroad.riv",
   },
   {
-    id: "stack-buil",
-    name: "Stack Builder",
-    description: "Drag, stack, and ship without dropping a block.",
+    id: "Chameleon-Catch",
+    name: "Chameleon-Catch",
+    description: "Click & catch the bees as they appear!",
     riveFile: "/rive/char.riv",
   },
   {
-    id: "stack-builr",
-    name: "Stack Builder",
-    description: "Drag, stack, and ship without dropping a block.",
+    id: "Maze-Runner",
+    name: "Maze-Runner",
+    description: "Find your way through the maze.",
     riveFile: "/rive/maze.riv",
   },
   {
-    id: "stacilder",
-    name: "Stack Builder",
-    description: "Drag, stack, and ship without dropping a block.",
+    id: "Bunny-choose",
+    name: "Bunny-Choose",
+    description: "Help the bunny choose the right Card!",
     riveFile: "/rive/memory.riv",
   },
 ];
@@ -227,16 +227,67 @@ export default function ContactSection() {
     }
   };
 
+  // ---------- SMOOTH CROSSFADE WORD ROTATION (RELIABLE LOOP) ----------
+  const headerWords = ["wild", "innovative", "fun"];
+  const [wordIndex, setWordIndex] = useState(0);
+  const reducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    // respect prefers-reduced-motion
+    if (typeof window !== "undefined") {
+      reducedMotionRef.current =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    // interval that advances the word index reliably
+    // if reduced motion is on, still rotate but without the fancy timing; interval is longer
+    const intervalMs = reducedMotionRef.current ? 3000 : 2600;
+    const id = setInterval(() => {
+      setWordIndex((i) => (i + 1) % headerWords.length);
+    }, intervalMs);
+
+    return () => clearInterval(id);
+  }, []);
+
+  const headerActiveWord = headerWords[wordIndex];
+
+  // crossfade variants: gentle fade out then fade in
+  // we use AnimatePresence mode="wait" so exit completes before enter
+  const wordVariants = {
+    initial: { opacity: 0, y: 0, scale: 1 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.65, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      y: 0,
+      scale: 0.99,
+      transition: { duration: 0.65, ease: "easeInOut" },
+    },
+  };
+
   return (
     <section
       id="contact"
       ref={sectionRef}
       className="relative w-full bg-black text-white pt-16 mb-13 overflow-hidden"
     >
+      {/* small inline style to ensure highlighted word spacing */}
+      <style>{`
+        .header-word-wrapper { display:inline-block; min-width:5ch; }
+        @media (prefers-reduced-motion: reduce) {
+          .jump-word { transition:none !important; }
+        }
+      `}</style>
+
       {/* BACKGROUND GLOW */}
       <div className="pointer-events-none absolute inset-x-0 -top-32 h-40 bg-red-600/40 blur-3xl" />
 
-      {/* MAIN CONTENT (hidden when arcade is open) */}
+      {/* MAIN CONTENT */}
       <motion.div
         className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
         animate={{ opacity: mode === "contact" ? 1 : 0 }}
@@ -248,8 +299,32 @@ export default function ContactSection() {
             <p className="text-xs tracking-[0.35em] uppercase text-red-400 mb-2">
               Contact
             </p>
+
+            {/* UPDATED heading: smooth crossfade for the last word */}
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Let&apos;s build something wild
+              Let&apos;s build something{" "}
+              <span
+                className="header-word-wrapper"
+                aria-live="polite"
+                aria-atomic
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={wordIndex} // key by index so AP handles exit -> enter properly
+                    className="inline-block jump-word"
+                    variants={wordVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    style={{ display: "inline-block" }}
+                  >
+                    <span className="text-red-400" aria-hidden>
+                      {headerActiveWord}
+                    </span>
+                    <span className="sr-only">{headerActiveWord}</span>
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </h2>
           </div>
 
@@ -278,10 +353,7 @@ export default function ContactSection() {
 
         {/* MAIN LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-8 lg:gap-12">
-          {/* LEFT COLUMN: socials + comments */}
           <ContactLeftColumn />
-
-          {/* RIGHT COLUMN: Arcade card */}
           <div className="relative min-h-[260px]">
             <ArcadeCard onEnterArcade={() => setMode("arcade")} />
           </div>
@@ -344,16 +416,15 @@ function ContactLeftColumn() {
   );
 }
 
-/* ---------- Comments slider + add comment ---------- */
+/* ---------- Comments slider + add comment (unchanged logic) ---------- */
 
 function CommentsSlider() {
   const [comments, setComments] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [adding, setAdding] = useState(false);
 
-  // NEW: track horizontal scroll progress
   const scrollRef = useRef(null);
-  const [scrollProgress, setScrollProgress] = useState(0); // 0 → 1
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const q = query(
@@ -363,10 +434,7 @@ function CommentsSlider() {
     const unsub = onSnapshot(
       q,
       (snap) => {
-        const data = snap.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        }));
+        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         setComments(data);
       },
       (err) => console.error("comments onSnapshot error:", err)
@@ -374,25 +442,16 @@ function CommentsSlider() {
     return unsub;
   }, []);
 
-  // Scroll progress listener
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-
     let rafId = null;
-
     const updateProgress = () => {
       const maxScroll = el.scrollWidth - el.clientWidth;
-      if (maxScroll <= 0) {
-        setScrollProgress(1);
-      } else {
-        // clamp to [0,1]
-        const prog = Math.max(0, Math.min(1, el.scrollLeft / maxScroll));
-        setScrollProgress(prog);
-      }
+      if (maxScroll <= 0) setScrollProgress(1);
+      else
+        setScrollProgress(Math.max(0, Math.min(1, el.scrollLeft / maxScroll)));
     };
-
-    // throttle via rAF for smoothness
     const onScroll = () => {
       if (rafId != null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
@@ -400,11 +459,9 @@ function CommentsSlider() {
         rafId = null;
       });
     };
-
     updateProgress();
     el.addEventListener("scroll", onScroll);
     window.addEventListener("resize", updateProgress);
-
     return () => {
       el.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateProgress);
@@ -432,18 +489,15 @@ function CommentsSlider() {
     scrollByAmount(step);
   };
 
-  // UI booleans for disabling arrows
   const atStart = scrollProgress <= 0.03;
   const atEnd = scrollProgress >= 0.97;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (adding) return;
-
     const formData = new FormData(e.target);
     const name = formData.get("name")?.toString().trim() || "Anonymous";
     const message = formData.get("message")?.toString().trim();
-
     if (!message) return;
     try {
       setAdding(true);
@@ -453,8 +507,7 @@ function CommentsSlider() {
         createdAt: serverTimestamp(),
       });
       e.target.reset();
-      setShowForm(false); // auto-close after submit
-      // optional: scroll to start so new comment is visible
+      setShowForm(false);
       const el = scrollRef.current;
       if (el) el.scrollTo({ left: 0, behavior: "smooth" });
     } catch (err) {
@@ -479,9 +532,7 @@ function CommentsSlider() {
         </button>
       </div>
 
-      {/* slider + animated progress bar */}
       <div className="relative">
-        {/* Left arrow */}
         {comments.length > 0 && (
           <button
             onClick={handlePrev}
@@ -504,7 +555,6 @@ function CommentsSlider() {
           </button>
         )}
 
-        {/* Horizontal list, native scrollbar hidden */}
         <div
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory no-scrollbar"
@@ -512,12 +562,7 @@ function CommentsSlider() {
           {comments.map((c) => (
             <div
               key={c.id}
-              className="
-                min-w-[230px] max-w-xs
-                snap-center
-                rounded-2xl border border-white/10 bg-white/5
-                px-4 py-3
-              "
+              className="min-w-[230px] max-w-xs snap-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
             >
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-red-500/70 flex items-center justify-center text-xs font-semibold">
@@ -543,7 +588,6 @@ function CommentsSlider() {
           )}
         </div>
 
-        {/* Right arrow */}
         {comments.length > 0 && (
           <button
             onClick={handleNext}
@@ -566,7 +610,6 @@ function CommentsSlider() {
           </button>
         )}
 
-        {/* Custom animated progress bar */}
         <div className="mt-1.5 h-1 w-full bg-white/10 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-red-500"
@@ -585,7 +628,6 @@ function CommentsSlider() {
         </div>
       </div>
 
-      {/* POPUP form overlay */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -595,7 +637,7 @@ function CommentsSlider() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 flex items-center justify-center bg-black/70"
-            onClick={() => setShowForm(false)} // click backdrop to close
+            onClick={() => setShowForm(false)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 10, opacity: 0 }}
@@ -603,7 +645,7 @@ function CommentsSlider() {
               exit={{ scale: 0.9, y: 10, opacity: 0 }}
               transition={{ duration: 0.18, ease: "easeOut" }}
               className="w-full max-w-lg mx-4 rounded-2xl border border-red-500/40 bg-black px-5 py-4"
-              onClick={(e) => e.stopPropagation()} // prevent backdrop close when clicking inside
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs tracking-[0.25em] uppercase text-red-300">
@@ -684,7 +726,7 @@ function ArcadeCard({ onEnterArcade }) {
             Resume ▷
           </button>
           <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em]">
-            Games · Rive · Experiments
+            Games · Fun
           </p>
         </div>
       </div>
@@ -698,9 +740,8 @@ function ArcadeCard({ onEnterArcade }) {
 
 function ArcadeOverlay({ onExit }) {
   const [activeGame, setActiveGame] = useState(null);
-  const [gameStats, setGameStats] = useState({}); // { [gameId]: playCount }
+  const [gameStats, setGameStats] = useState({});
 
-  // listen to all gameStats updates in realtime
   useEffect(() => {
     const unsub = onSnapshot(
       collection(db, "gameStats"),
@@ -716,20 +757,14 @@ function ArcadeOverlay({ onExit }) {
     return unsub;
   }, []);
 
-  // increment play count when opening a game
   const handleOpenGame = async (gameId) => {
     setActiveGame(gameId);
     try {
       const ref = doc(db, "gameStats", gameId);
       await runTransaction(db, async (tx) => {
         const snap = await tx.get(ref);
-        if (!snap.exists()) {
-          tx.set(ref, { playCount: 1 });
-        } else {
-          tx.update(ref, {
-            playCount: (snap.data().playCount || 0) + 1,
-          });
-        }
+        if (!snap.exists()) tx.set(ref, { playCount: 1 });
+        else tx.update(ref, { playCount: (snap.data().playCount || 0) + 1 });
       });
     } catch (err) {
       console.error("increment playCount error:", err);
@@ -742,14 +777,8 @@ function ArcadeOverlay({ onExit }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.98 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="
-        absolute inset-0
-        z-30
-        bg-black/95
-        flex flex-col
-      "
+      className="absolute inset-0 z-30 bg-black/95 flex flex-col"
     >
-      {/* top bar */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-white/10">
         <button
           onClick={onExit}
@@ -762,7 +791,6 @@ function ArcadeOverlay({ onExit }) {
         </p>
       </div>
 
-      {/* games list – each card can expand to show the game */}
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5">
         <div className="max-w-4xl mx-auto space-y-4">
           <p className="text-xs tracking-[0.3em] uppercase text-red-300 mb-2">
@@ -777,25 +805,15 @@ function ArcadeOverlay({ onExit }) {
               <motion.div
                 key={game.id}
                 layout
-                className={`
-                  relative
-                  w-full
-                  rounded-2xl
-                  border
-                  cursor-pointer
-                  overflow-hidden
-                  transition-colors
-                  ${
-                    isActive
-                      ? "border-red-500 bg-red-500 text-black"
-                      : "border-white/10 bg-white/5 hover:bg-red-500/20"
-                  }
-                `}
+                className={`relative w-full rounded-2xl border cursor-pointer overflow-hidden transition-colors ${
+                  isActive
+                    ? "border-red-500 bg-red-500 text-black"
+                    : "border-white/10 bg-white/5 hover:bg-red-500/20"
+                }`}
                 onClick={() => {
                   if (!isActive) handleOpenGame(game.id);
                 }}
               >
-                {/* HEADER ROW */}
                 <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold truncate">
@@ -810,7 +828,6 @@ function ArcadeOverlay({ onExit }) {
                     </p>
                   </div>
 
-                  {/* play count pill */}
                   <div
                     className={`text-[10px] px-3 py-1 rounded-full uppercase tracking-[0.2em] ${
                       isActive
@@ -822,7 +839,6 @@ function ArcadeOverlay({ onExit }) {
                   </div>
                 </div>
 
-                {/* EXPANDED GAME BODY */}
                 <AnimatePresence initial={false}>
                   {isActive && (
                     <motion.div
@@ -833,7 +849,6 @@ function ArcadeOverlay({ onExit }) {
                       transition={{ duration: 0.25, ease: "easeOut" }}
                     >
                       <div className="relative">
-                        {/* close button */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -843,8 +858,6 @@ function ArcadeOverlay({ onExit }) {
                         >
                           ×
                         </button>
-
-                        {/* FULL-WIDTH GAME AREA */}
                         <div className="w-full aspect-[16/9] bg-black">
                           <RiveRenderer src={game.riveFile} />
                         </div>
