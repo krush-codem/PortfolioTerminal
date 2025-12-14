@@ -4,7 +4,6 @@ import LandingView from "./components/LandingView";
 import DeveloperView from "./components/DeveloperView";
 import ProfileView from "./components/ProfileView";
 
-
 function App() {
   const [mode, setMode] = useState("landing"); // 'landing' | 'developer' | 'profile'
 

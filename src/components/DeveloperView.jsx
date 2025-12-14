@@ -2,10 +2,12 @@
 import { useEffect } from "react";
 import ProfileCard from "./ProfileCard";
 import * as THREE from "three";
+import Squares from "@/components/Squares";
 
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { Square } from "lucide-vue-next";
 
 function DeveloperView({ active, onClose }) {
   useEffect(() => {
@@ -713,6 +715,12 @@ function DeveloperView({ active, onClose }) {
           : "opacity-0 translate-y-4 pointer-events-none"
       } transition-all duration-500 overflow-y-auto`}
     >
+      {active && (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Squares />
+        </div>
+      )}
+
       <div className="p-4 md:p-8 min-h-full">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left: profile card with 3D container - natural height on mobile, full on desktop */}
