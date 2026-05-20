@@ -1,12 +1,16 @@
+//ProfileView.jsx
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FaGithub, FaFileAlt } from "react-icons/fa";
-import SkillsSection from "./SkillsSection"; // adjust path if needed
+import { FaFileAlt } from "react-icons/fa";
+import SkillsSection from "./SkillsSection";
 import ProjectsSection from "./ProjectsSection";
 import ContactSection from "./ContactSection";
+import SEO from "./SEO";
 
-export default function ProfileView({ onBack }) {
+export default function ProfileView() {
   const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   // Scroll-based parallax for title + portrait
   const { scrollYProgress } = useScroll({
@@ -15,22 +19,28 @@ export default function ProfileView({ onBack }) {
   });
 
   const heroTitleY = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const heroImageScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
-
-  const active = true; // used for small fade-in, can be wired to intro later
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full bg-black text-white overflow-x-hidden"
+      className="min-h-screen w-full bg-black text-white overflow-x-hidden no-scrollbar"
     >
+      {/* Scoped injection styling block to cleanly strip out browser scroll bars */}
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+
       {/* ========================== HERO SECTION ========================== */}
       <section className="relative w-full bg-black text-white overflow-hidden flex flex-col">
         {/* BACKGROUND: DIAGONAL STRIPS + HUGE NAME */}
-        {/* Added pt-16 to push content down on all screens */}
         <div className="pointer-events-none absolute inset-0 z-0 pt-16">
-          {/* diagonal strips - z-0 on small screens to go behind portrait */}
+          {/* diagonal strips */}
           <div className="absolute inset-0 flex items-center justify-center z-0 md:z-auto">
             {/* top-left → bottom-right */}
             <div className="w-[220%] h-8 md:h-10 rotate-[16deg]">
@@ -59,14 +69,12 @@ export default function ProfileView({ onBack }) {
             </div>
           </div>
 
-          {/* huge name - z-0 on small screens to go behind portrait */}
+          {/* huge name */}
           <motion.div
-            // parallax from before (keeps that nice slight drift)
             style={{ y: heroTitleY }}
-            // fade + scale cinematic reveal
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ amount: 0.6, once: false }} // replay when you come back
+            viewport={{ amount: 0.6, once: false }}
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="absolute inset-x-0 top-1/4 -translate-y-[4vw] text-center leading-none z-0 md:z-auto"
           >
@@ -79,89 +87,52 @@ export default function ProfileView({ onBack }) {
           </motion.div>
         </div>
 
-        {/* TOP NAV - This stays in place */}
-        <div className="relative z-30 flex items-center justify-between px-6 md:px-12 lg:px-20 pt-6">
-          <button
-            onClick={onBack}
-            className="rounded-full px-4 py-1 text-sm bg-white/5 border border-white/20 text-gray-200 hover:bg-white hover:text-black transition"
-          >
-            ← Back
-          </button>
+        {/* TOP NAV */}
+        <div className="relative z-30 flex items-center justify-between px-6 md:px-12 lg:px-20 pt-6 w-full">
+          <SEO
+            title="Profile"
+            description="Explore my professional profile, including technical skills, projects, and contact information."
+          />
 
-          <div className="flex items-center gap-3 text-[10px] tracking-[0.35em] text-gray-400 uppercase">
+          {/* LEFT CORNER: CINE•PORTFOLIO + PULSING GLOW DOT */}
+          <div className="flex items-center gap-2 text-[10px] tracking-[0.35em] text-white uppercase font-mono whitespace-nowrap select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444] animate-pulse" />
             <span>CINE•PORTFOLIO</span>
-            <span className="w-1 h-1 rounded-full bg-red-500" />
+          </div>
 
-            {/* icons (resume + github) */}
-            <div className="ml-3 flex items-center gap-2">
-              <a
-                href="https://drive.google.com/file/d/1eSka3wgpO6k5RbBYNnkmxFg6mUfM_eYL/view?usp=sharing" /* replace with your resume URL or route */
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Open resume"
-                className="inline-flex items-center gap-2 px-2 py-1 rounded-md border border-white/10 bg-white/3 hover:bg-red-500 hover:text-black transition-colors"
-              >
-                <FaFileAlt className="text-red-400" />
-                <span className="hidden sm:inline text-[10px] tracking-[0.25em]">
-                  Resume
-                </span>
-              </a>
-
-              <a
-                href="https://github.com/krush-codem" /* replace with your GitHub URL */
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Open GitHub"
-                className="inline-flex items-center gap-2 px-2 py-1 rounded-md border border-white/10 bg-white/3 hover:bg-red-500 hover:text-black transition-colors"
-              >
-                <FaGithub className="text-red-400" />
-                <span className="hidden sm:inline text-[10px] tracking-[0.25em]">
-                  GitHub
-                </span>
-              </a>
-            </div>
+          {/* RIGHT CORNER: RESUME */}
+          <div className="flex justify-end">
+            <a
+              href="https://drive.google.com/file/d/1eSka3wgpO6k5RbBYNnkmxFg6mUfM_eYL/view?usp=sharing"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open resume"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-white/10 bg-white/5 hover:bg-red-500 hover:text-black transition-colors"
+            >
+              <FaFileAlt className="text-red-400" />
+              <span className="text-[10px] tracking-[0.25em] uppercase font-mono">
+                Resume
+              </span>
+            </a>
           </div>
         </div>
 
-        {/* CENTER AREA – portrait is anchored relative to hero bottom */}
-        {/* Added pt-16 and z-10 to push portrait down and keep it above ribbons on small screens */}
+        {/* CENTER AREA – portrait cutout */}
         <div className="relative z-10 flex-1 flex items-end justify-center pt-16">
           <motion.div className="relative flex items-center justify-center pb-0">
-            {/* left thought bubble */}
-            <div className="hidden md:block absolute -left-64 lg:-left-80 top-1/2 -translate-y-1/2 float-bubble max-w-sm">
-              <div className="rounded-2xl bg-white/10 border border-white/25 px-6 py-4 text-xs md:text-sm text-gray-100 shadow-xl backdrop-blur">
-                <p>
-                  I'm a passionate software engineer who loves building
-                  interactive, cinematic web experiences that feel more like
-                  movie intros than standard portfolios.
-                </p>
-              </div>
-            </div>
-
-            {/* right thought bubble */}
-            <div className="hidden md:block absolute -right-64 lg:-right-80 top-1/2 -translate-y-1/2 float-bubble-delay max-w-sm">
-              <div className="rounded-2xl bg-white/10 border border-white/25 px-6 py-4 text-xs md:text-sm text-gray-100 shadow-xl backdrop-blur">
-                <p>
-                  I blend frontend engineering with bold visual design –
-                  terminals for devs, and high-impact storytelling for everyone
-                  else.
-                </p>
-              </div>
-            </div>
-
             {/* red glow behind portrait */}
             <div className="absolute -inset-20 rounded-full bg-red-600/40 blur-3xl -z-10" />
 
-            {/* floating cutout image - with relative z-10 to stay above ribbons */}
+            {/* floating cutout image */}
             <img
-              src="/nobg1.png"
+              src="/krush3s.gif"
               alt="Harekrushna Behera"
               className="relative z-10 w-[280px] md:w-[340px] lg:w-[500px] object-contain"
             />
           </motion.div>
         </div>
 
-        {/* BOTTOM MOVING STRIP – this is the ground line */}
+        {/* BOTTOM MOVING STRIP */}
         <div className="strip bg-red-600 h-8 md:h-10 flex items-center relative z-20">
           <div className="strip-inner text-[9px] md:text-[11px] tracking-[0.35em] text-white">
             {Array.from({ length: 20 }).map((_, i) => (
@@ -173,7 +144,7 @@ export default function ProfileView({ onBack }) {
         </div>
       </section>
 
-      {/* ========================== SECTION 2 (placeholder) ========================== */}
+      {/* ========================== CONTENT SECTIONS ========================== */}
       <SkillsSection />
       <ProjectsSection />
       <ContactSection />
