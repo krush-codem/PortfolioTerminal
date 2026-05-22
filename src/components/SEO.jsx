@@ -15,6 +15,17 @@ const SEO = ({ title, description, keywords, image, url }) => {
     "url": siteUrl,
     "jobTitle": "Software Developer",
     "description": fullDescription,
+    "knowsAbout": [
+      "Software Engineering",
+      "React.js",
+      "JavaScript",
+      "Three.js",
+      "Frontend Development",
+      "Full Stack Development",
+      "Java",
+      "Python",
+      "UI/UX Design"
+    ],
     "sameAs": [
       "https://github.com/krush-codem",
       "https://linkedin.com/in/harekrushnabehera121"
