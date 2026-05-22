@@ -1,7 +1,6 @@
 // src/components/ProjectsSection.jsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { desc } from "framer-motion/client";
 
 const PROJECTS = [
   {

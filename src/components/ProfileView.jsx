@@ -1,16 +1,15 @@
 //ProfileView.jsx
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll, useTransform, motion } from "framer-motion";
 import { FaFileAlt } from "react-icons/fa";
 import SkillsSection from "./SkillsSection";
 import ProjectsSection from "./ProjectsSection";
+import IdentitySection from "./IdentitySection";
 import ContactSection from "./ContactSection";
 import SEO from "./SEO";
 
 export default function ProfileView() {
   const containerRef = useRef(null);
-  const navigate = useNavigate();
 
   // Scroll-based parallax for title + portrait
   const { scrollYProgress } = useScroll({
@@ -90,8 +89,9 @@ export default function ProfileView() {
         {/* TOP NAV */}
         <div className="relative z-30 flex items-center justify-between px-6 md:px-12 lg:px-20 pt-6 w-full">
           <SEO
-            title="Profile"
-            description="Explore my professional profile, including technical skills, projects, and contact information."
+            title="Professional Profile"
+            description="Explore the professional work of Harekrushna Behera. A detailed look at full-stack development projects, technical skills in React and Java, and professional experience in software engineering."
+            url="/profile"
           />
 
           {/* LEFT CORNER: CINE•PORTFOLIO + PULSING GLOW DOT */}
@@ -147,6 +147,7 @@ export default function ProfileView() {
       {/* ========================== CONTENT SECTIONS ========================== */}
       <SkillsSection />
       <ProjectsSection />
+      <IdentitySection />
       <ContactSection />
     </div>
   );

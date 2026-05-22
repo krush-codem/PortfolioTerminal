@@ -2,7 +2,6 @@
 import { useNavigate } from "react-router-dom";
 import ProfileCard from "./ProfileCard";
 import ColorBends from "@/components/ColorBends";
-import { motion } from "framer-motion";
 import SEO from "./SEO";
 
 function LandingView({ active }) {
@@ -30,7 +29,7 @@ function LandingView({ active }) {
 
       <SEO
         title="Home"
-        description="Welcome to my interactive portfolio. Explore my work as a software developer through cinematic and developer-focused views."
+        description="Welcome to Harekrushna Behera's interactive developer portfolio. Discover a unique fusion of software engineering and cinematic web design. Choose between a visual profile or a command-line developer experience."
       />
       {/* ===== Animated Background (Color Bends) ===== */}
       {active && (

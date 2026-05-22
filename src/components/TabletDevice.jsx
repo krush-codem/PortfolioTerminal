@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TerminalSystem from "./TerminalSystem";
+import SEO from "./SEO";
 
 // Dynamic canvas wrapper loaded seamlessly for the final phase interactions
 const LazyRippleCanvas = lazy(() => import("./RippleCanvas"));
@@ -136,7 +137,6 @@ const IdentityAssembler = ({ onComplete }) => {
   ];
 
   const [displayName, setDisplayName] = useState("");
-  const [showWarrant, setShowWarrant] = useState(false);
   const [bgImage, setBgImage] = useState("/la-load.png");
 
   useEffect(() => {
@@ -178,9 +178,6 @@ const IdentityAssembler = ({ onComplete }) => {
             step++;
           } else {
             clearInterval(finalizeInterval);
-            setTimeout(() => {
-              setShowWarrant(true);
-            }, 400);
             setTimeout(() => {
               onComplete();
             }, 3800);
@@ -250,6 +247,11 @@ export default function HolographicDashboard() {
 
   return (
     <HolographicWrapper phase={phase}>
+      <SEO 
+        title="Developer Console" 
+        description="Experience a command-line interface (CLI) portfolio. Interact with the HKB OS terminal to explore technical skills, full-stack projects, and system logs through an immersive hacker-style UI."
+        url="/dev"
+      />
       {/* Ripple engine fires cleanly inside workspace boundaries during the terminal phase */}
       {phase === "terminal" && (
         <Suspense

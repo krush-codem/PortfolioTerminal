@@ -1,18 +1,7 @@
-// src/components/TerminalSystem.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
+import { signInAnonymously } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
 const BOOT_SEQUENCE = [
   "Initializing Kernel 5.10.0-23-amd64...",
@@ -33,8 +22,6 @@ export default function TerminalSystem() {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [portfolioData, setPortfolioData] = useState({});
-  const [db, setDb] = useState(null);
-  const [auth, setAuth] = useState(null);
 
   const terminalEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -83,26 +70,9 @@ export default function TerminalSystem() {
   };
 
   const connectToFirebase = async () => {
-    if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("YOUR")) {
-      setLines((prev) => [
-        ...prev,
-        {
-          type: "system",
-          content: "Notice: Firebase not configured. Using default content.",
-        },
-      ]);
-      return;
-    }
-
     try {
-      const app = initializeApp(firebaseConfig);
-      const authInstance = getAuth(app);
-      const dbInstance = getFirestore(app);
-      setAuth(authInstance);
-      setDb(dbInstance);
-
-      await signInAnonymously(authInstance);
-      const docRef = doc(dbInstance, "portfolio", "mainContent");
+      await signInAnonymously(auth);
+      const docRef = doc(db, "portfolio", "mainContent");
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -143,12 +113,13 @@ export default function TerminalSystem() {
           },
         ]);
         break;
-      case "about":
+      case "about": {
         const aboutText =
           portfolioData.about || "I'm a passionate software engineer...";
         addLines([{ text: aboutText }]);
         break;
-      case "skills":
+      }
+      case "skills": {
         const skills = portfolioData.skills || [];
         if (skills.length === 0) {
           addLines([{ text: "No skills found." }]);
@@ -160,7 +131,8 @@ export default function TerminalSystem() {
           addLines(skillsList);
         }
         break;
-      case "experience":
+      }
+      case "experience": {
         const exp = portfolioData.experience || [];
         if (exp.length === 0) {
           addLines([{ text: "No experience found." }]);
@@ -172,7 +144,8 @@ export default function TerminalSystem() {
           addLines(expList);
         }
         break;
-      case "projects":
+      }
+      case "projects": {
         const projects = portfolioData.projects || [];
         if (projects.length === 0) {
           addLines([{ text: "No projects found." }]);
@@ -187,6 +160,7 @@ export default function TerminalSystem() {
           addLines(projectList);
         }
         break;
+      }
       case "clear":
         setLines([]);
         break;
