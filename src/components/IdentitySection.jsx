@@ -100,7 +100,7 @@ export default function IdentitySection() {
                     <span className="w-4 h-[1px] bg-red-500" /> Professional_Objective
                   </h3>
                   <p className="text-sm text-gray-300 leading-relaxed font-mono">
-                    Software Developer with a passion for building interactive, cinematic web experiences. 
+                    FrontEnd Developer with a passion for building interactive, cinematic web experiences. 
                     Specialized in React, Three.js, and modern frontend architectures with a solid 
                     foundation in backend systems.
                   </p>
@@ -111,13 +111,13 @@ export default function IdentitySection() {
                     <h3 className="text-red-400 text-xs tracking-[0.3em] uppercase mb-4">Experience_History</h3>
                     <div className="space-y-4 font-mono">
                       <div>
-                        <p className="text-white text-xs font-bold uppercase">Software Developer Intern</p>
+                        <p className="text-white text-xs font-bold uppercase">FrontEnd Developer</p>
                         <p className="text-gray-500 text-[10px]">2024 - PRESENT | REMOTE</p>
                         <p className="text-gray-400 text-xs mt-1">Focusing on high-performance UI and interactive components.</p>
                       </div>
                       <div>
                         <p className="text-white text-xs font-bold uppercase">Open Source Contributor</p>
-                        <p className="text-gray-500 text-[10px]">2023 - 2024 | GITHUB</p>
+                        <p className="text-gray-500 text-[10px]">2025 - PRESENT | GITHUB</p>
                       </div>
                     </div>
                   </motion.div>
@@ -126,9 +126,9 @@ export default function IdentitySection() {
                     <h3 className="text-red-400 text-xs tracking-[0.3em] uppercase mb-4">Education_Logs</h3>
                     <div className="space-y-4 font-mono">
                       <div>
-                        <p className="text-white text-xs font-bold uppercase">Bachelors in Computer Science</p>
-                        <p className="text-gray-500 text-[10px]">2021 - 2025</p>
-                        <p className="text-gray-400 text-xs mt-1">Focus on Algorithms, Web Systems, and AI.</p>
+                        <p className="text-white text-xs font-bold uppercase">Bachelors in ITM</p>
+                        <p className="text-gray-500 text-[10px]">2023 - 2026</p>
+                        <p className="text-gray-400 text-xs mt-1">Focus on FrontEnd, Algorithms, Web Systems, and AI.</p>
                       </div>
                     </div>
                   </motion.div>
@@ -142,7 +142,7 @@ export default function IdentitySection() {
                     className="inline-flex items-center gap-3 px-6 py-3 rounded-lg border border-red-500/30 bg-red-500/5 hover:bg-red-500 hover:text-black transition-all group"
                   >
                     <FaFileDownload className="text-red-400 group-hover:text-black" />
-                    <span className="text-[10px] tracking-[0.2em] uppercase font-bold">Download_Full_Dossier_PDF</span>
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-bold">Download_Full_Resume_PDF</span>
                   </a>
                 </motion.div>
               </div>
