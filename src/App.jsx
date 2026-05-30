@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import LandingView from "./components/LandingView";
 import TabletDevice from "./components/TabletDevice";
 import ProfileView from "./components/ProfileView";
@@ -24,6 +25,7 @@ function App() {
           </Routes>
         )}
       </AnimatePresence>
+      <Analytics />
     </div>
   );
 }
